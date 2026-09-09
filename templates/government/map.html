@@ -1,0 +1,20 @@
+{% extends "government/_base.html" %}
+{% block title %}Geo Map — {{ app_name }}{% endblock %}
+{% block dashboard_content %}
+<div class="page-header"><div><h1>Challenge Geo Map</h1><p>All challenges with location data plotted on the map.</p></div></div>
+
+<div class="card card-body">
+  {% set loc_data = [] %}
+  <div id="challenge-map" class="map-container" data-locations='[
+    {% for l in locations %}
+      {"title": {{ l.challenge.title|tojson }}, "lat": {{ l.latitude }}, "lng": {{ l.longitude }},
+       "category": {{ (l.challenge.category.name if l.challenge.category else "")|tojson }},
+       "priority": {{ l.challenge.priority_score }}, "status": {{ l.challenge.status|tojson }},
+       "url": {{ url_for('government.challenge_detail', challenge_id=l.challenge_id)|tojson }}}{{ "," if not loop.last }}
+    {% endfor %}
+  ]'></div>
+</div>
+{% if not locations %}
+<div class="empty-state" style="margin-top:20px;"><i class="fa-solid fa-map"></i>No geo-tagged challenges yet.</div>
+{% endif %}
+{% endblock %}
